@@ -5,7 +5,8 @@ import App from './App'
 import router from './router'
 
 Vue.config.productionTip = false
-
+// 设置代理
+Vue.prototype.http = '/api'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
