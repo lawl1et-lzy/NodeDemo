@@ -4,7 +4,6 @@ const Schema = Mongoose.Schema
 let user = {
   username: String,
   password: String,
-  email: String,
   createdAt: Date
 }
 

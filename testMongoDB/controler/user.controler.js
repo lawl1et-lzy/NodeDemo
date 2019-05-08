@@ -47,6 +47,29 @@ let usersave = async (req, res, next) => {
   }
 }
 
+let findAll = (req, res, next) => {
+  return modelUser.find({})
+    .then((data, doc) => {
+      if(data.length === 0) {
+        res.json({
+          error_code: 0,
+          hint_message: '暂无数据',
+          data
+        })
+      } else {
+        res.json({
+          error_code: 0,
+          hint_message: '',
+          data
+        })
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
 module.exports = {
-  usersave
+  usersave,
+  findAll
 }
