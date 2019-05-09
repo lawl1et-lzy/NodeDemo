@@ -5,8 +5,8 @@ const productControler = require('./controler/product.controler.js')
 // 用户登录
 router.post('/api/signUp', userControler.usersave)
 
-// root
-router.post('/api/product', productControler.findAll)
+// 商品
+router.post('/api/product', productControler.goodsList)
 
 // 所有的用户
 router.post('/api/allstudent', userControler.findAll)
