@@ -29,9 +29,6 @@ export default {
       })
       return routeMatchedList
     }
-  },
-  created () {
-    console.log('Breadcrumb', this.$route.matched)
   }
 }
 </script>

@@ -8,7 +8,7 @@
         <a class="goods-sort">
           Default
         </a>
-        <a class="goods-sort">
+        <a class="goods-sort" @click="handlePriceOrderByClick">
           Price
           <svg class="icon icon-arrow-short">
             <use xlink:href="#icon-arrow-short"></use>
@@ -23,24 +23,25 @@
           PRICE:
         </div>
         <div class="subnav-between">
-          <a class="b-item">
-            ALL
-          </a>
-          <a class="b-item">
-            0.00 - 100.00
-          </a>
-          <a class="b-item">
-            100.00 - 200.00
+          <!-- 价格区间 -->
+          <a
+            class="b-item"
+            v-for="(value, key) in priceLevelList"
+            :key="key"
+            @click="handlePriceBetween(key)"
+            :class="{'active': key === sort.priceLevel}"
+          >
+            {{ value }}
           </a>
         </div>
       </div>
       <div class="body-list">
         <!-- item -->
-        <div class="item" v-for="(item, index) in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]" :key="index">
+        <div class="item" v-for="item in goods" :key="item.productId">
           <div class="item-img">
             <el-image
               style="width: 100%;height: 260px;"
-              :src="require(`@/images/${item}.jpg`)"
+              :src="require(`@/images/${item.productImage}`)"
               :fit="'cover'"
               :lazy="true">
               <div slot="error" class="image-slot">
@@ -49,19 +50,105 @@
             </el-image>
           </div>
           <div class="item-cont">
-            <div class="cont-name">自拍杆</div>
-            <div class="cont-price">39</div>
+            <div class="cont-name">{{ item.productName }}</div>
+            <div class="cont-price">{{ item.salePrice }}</div>
             <div class="cont-button">加入购物车</div>
           </div>
         </div>
       </div>
     </section>
+    <div class="view-more-normal"
+      v-infinite-scroll="loadMore"
+      infinite-scroll-disabled="busy"
+      infinite-scroll-distance="10">
+    </div>
   </div>
 </template>
 
 <script>
+import Api from '@/api/index.api'
+const ORDER_BY_ASC = {
+  'false': '-1',
+  'true': '1'
+}
+const PRICE_BETWEEN = {
+  '0': 'ALL',
+  '1': '0.00 - 100.00',
+  '2': '100.00 - 500.00',
+  '3': '500.00 - 1000.00',
+  '4': '1000.00 - 5000.00'
+}
 export default {
-  name: 'Goods'
+  name: 'Goods',
+  data () {
+    return {
+      goods: [], // 商品列表
+      busy: false, // infinite-scroll
+      pageSize: 8,
+      page: 0,
+      stopApiReq: false, // 接口请求是否是空数据
+      priceLevelList: PRICE_BETWEEN, // 价格区间
+      sort: {
+        priceLevel: '0', // 选择的价格区间
+        orderBy: true // 升降序
+      }
+    }
+  },
+  watch: {
+    sort: {
+      handler (n) {
+        if (n) {
+          console.log('sort', n)
+          this.goods = []
+          this.page = 0
+          this.getGoodsList()
+        }
+      },
+      deep: true
+    }
+  },
+  methods: {
+    // 加载更多
+    loadMore () {
+      if (!this.stopApiReq) {
+        this.busy = true
+        this.getGoodsList()
+      }
+    },
+    // 获取商品信息
+    getGoodsList () {
+      this.page++
+      let param = {
+        pageSize: this.pageSize,
+        page: this.page,
+        orderBy: ORDER_BY_ASC[this.sort.orderBy],
+        priceLevel: this.sort.priceLevel
+      }
+      Api.getGoods(param)
+        .then(res => {
+          let { response, data } = res
+          if (!response.error_code) {
+            if (Array.isArray(data) && data.length > 0) {
+              this.goods.push(...data)
+            }
+          } else {
+            this.stopApiReq = true
+          }
+          this.busy = false
+        })
+        .catch(err => {
+          console.log('err', err)
+        })
+    },
+    // 升降序
+    handlePriceOrderByClick () {
+      this.sort.orderBy = !this.sort.orderBy
+    },
+    // 价格区间
+    handlePriceBetween (key) {
+      this.sort.priceLevel = key
+    }
+  }
 }
 </script>
 
@@ -95,6 +182,8 @@ export default {
   .goods-body{
     display: flex;
     margin-top: 40px;
+    overflow: hidden;
+    padding: 0 10px;
     .body-subnav{
       flex-shrink: 0;
       padding: 0 30px;
@@ -106,6 +195,10 @@ export default {
       .subnav-between{
         display: flex;
         flex-direction: column;
+        a.active{
+          color: #FCC151;
+          border-left: 4px solid #FCC151;
+        }
         .b-item{
           margin-top: 14px;
           padding-left: 10px;
@@ -121,7 +214,7 @@ export default {
       flex-wrap: wrap;
       .item{
         flex-shrink: 0;
-        width: calc(25% - 20px);
+        width: 24%;
         border: 1px solid #ccc;
         border-radius: 4px;
         background-color: #fff;
@@ -129,10 +222,8 @@ export default {
         flex-direction: column;
         justify-content: center;
         overflow: hidden;
-        margin: 0 20px 20px 0;
-        &:last-child{
-          margin-right: 0;
-        }
+        margin-right: 10px;
+        margin-bottom: 16px;
         .item-img{
           margin: 10px;
           img{
@@ -160,6 +251,12 @@ export default {
           }
         }
       }
+    }
+  }
+  .view-more-normal{
+    img{
+      width: 25px;
+      height: 25px;
     }
   }
 }
