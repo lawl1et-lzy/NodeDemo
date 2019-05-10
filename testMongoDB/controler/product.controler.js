@@ -60,7 +60,7 @@ let goodsList = (req, res, next) => {
           response: {
             error_code: 0,
             error_message: '',
-            hint_message: '暂无数据',
+            hint_message: '',
           },
           data: data
         })

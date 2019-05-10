@@ -23,8 +23,8 @@
     <div class="head-logo"></div>
     <div class="head-login">
       <div class="login-status">
-        <div class="status-sign-in">登录</div>
-        <!-- <div class="status-sign">xxx</div> -->
+        <div class="status-sign-in" v-if="!isLogin" @click="routerToLoginPage">登录</div>
+        <div class="status-sign-in" v-if="isLogin" @click="handleSignOut">{{ user.userName }} 退出登录</div>
       </div>
       <div class="icon icon-shoppingcar">
         <svg class="shoppingcar">
@@ -37,7 +37,26 @@
 
 <script>
 export default {
-  name: 'Header'
+  name: 'Header',
+  data () {
+    return {
+      user: JSON.parse(this.$cookie.get('user'))
+    }
+  },
+  computed: {
+    isLogin () {
+      return !!this.user
+    }
+  },
+  methods: {
+    handleSignOut () {
+      this.user = ''
+      this.$cookie.delete('user')
+    },
+    routerToLoginPage () {
+      this.$router.push({ path: '/home' })
+    }
+  }
 }
 </script>
 

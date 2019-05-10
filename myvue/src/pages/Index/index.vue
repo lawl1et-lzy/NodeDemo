@@ -3,9 +3,7 @@
     <v-header></v-header>
     <v-breadcrumb></v-breadcrumb>
     <!-- 子路由 -->
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+    <router-view></router-view>
     <v-footer></v-footer>
   </div>
 </template>

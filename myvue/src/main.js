@@ -6,7 +6,8 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import infiniteScroll from 'vue-infinite-scroll'
-
+let VueCookie = require('vue-cookie')
+Vue.use(VueCookie)
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 

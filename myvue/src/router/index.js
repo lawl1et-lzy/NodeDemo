@@ -19,7 +19,7 @@ export default new Router({
       },
       children: [
         {
-          path: 'Goods',
+          path: 'goods',
           name: 'Goods',
           component: Goods,
           meta: {
