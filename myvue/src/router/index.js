@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Index from '@/pages/Index'
 import Home from '@/pages/Home'
 import Goods from '@/pages/Goods'
+import Cart from '@/pages/Cart'
 
 Vue.use(Router)
 
@@ -34,6 +35,15 @@ export default new Router({
           meta: {
             title: 'Home',
             breadcrumbName: 'Home'
+          }
+        },
+        {
+          path: 'cart',
+          name: 'cart',
+          component: Cart,
+          meta: {
+            title: 'Cart',
+            breadcrumbName: 'Cart'
           }
         }
       ]

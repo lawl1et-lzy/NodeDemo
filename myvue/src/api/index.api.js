@@ -3,7 +3,7 @@ import axios from '../util/Api/Api.js'
 
 const http = '/api'
 class Api {
-  // 账户
+  // 登录
   static login (data) {
     return axios({
       method: 'POST',
@@ -11,6 +11,7 @@ class Api {
       data
     })
   }
+  // 注册
   static register (data) {
     return axios({
       method: 'POST',
@@ -18,12 +19,19 @@ class Api {
       data
     })
   }
-
   // 商品
   static getGoods (data) {
     return axios({
       method: 'POST',
       url: `${http}/product`,
+      data
+    })
+  }
+  // 购物车数据
+  static getCartList (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/cartList`,
       data
     })
   }
