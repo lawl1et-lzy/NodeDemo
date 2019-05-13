@@ -144,7 +144,82 @@ let loginOut = async (req, res, next) => {
   })
 }
 
+// 获取用户购物车数据
+let cartList = async (req, res, next) => {
+  console.log('cartList req.body', req.body)
+  let { pageSize, page, userid } = req.body
+  let _pageSize = parseInt(pageSize)
+  let _page = parseInt(page)
+  let _userid = String(userid)
+
+  let skip = _pageSize * (_page - 1)
+  if(isNaN(_pageSize)) {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: 'pageSize 是必传的',
+      }
+    })
+  }
+  if(isNaN(_page)) {
+    res.json({
+      response: {
+        error_code: 10002,
+        error_message: '',
+        hint_message: 'page 是必传的',
+      }
+    })
+  }
+  if(isNaN(_userid)) {
+    res.json({
+      response: {
+        error_code: 10003,
+        error_message: '',
+        hint_message: 'userid 是必传的',
+      }
+    })
+  }
+
+  let params = {
+    userId: _userid
+  }
+  return modelUser.find(params)
+    .then(data => {
+      if(data && data.length === 0){
+        res.json({
+          response: {
+            error_code: 10004,
+            error_message: '',
+            hint_message: '暂无数据',
+          }
+        })
+      } else {
+        let totalNum = 0
+        let { cartList } = data[0]
+        totalNum = cartList.length
+        let newCartList = cartList.slice(skip, _pageSize * page)
+        let info = {
+          totalNum,
+          data: newCartList
+        }
+        res.json({
+          response: {
+            error_code: 0,
+            error_message: '',
+            hint_message: '',
+          },
+          info
+        })
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
 module.exports = {
   login,
-  register
+  register,
+  cartList
 }
