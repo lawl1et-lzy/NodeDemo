@@ -1,6 +1,9 @@
 require('../db/model/users.model.js')
+require('../db/model/goods.model.js')
 const Mongoose = require('mongoose');
 const modelUser = Mongoose.model('user');
+const base = require('../util/base.js')
+const modelProduct = Mongoose.model('product')
 // const Promise = require('promise'); // 配合 Mongoose 使用
 
 // 判断是否存在
@@ -16,6 +19,33 @@ let hasUserInfo = async (param) => {
     .catch(err => {
       console.log('hasUserInfo', err)
     })
+}
+
+/**
+ * @method userCookie
+ * @description 判断 cookies 是否存在 user 信息
+ * 存在 => @return user
+ * 不存在 => @return false
+ */
+let userCookie = async ({req, res}) => {
+  let _user = req.cookies ? req.cookies.user : ''
+  let user = JSON.parse(_user)
+  if(!base.isObject(user)) {
+    res.cookie('user', '', {
+      path:"/",
+      maxAge:-1
+    })
+    res.json({
+      response: {
+        error_code: 10005,
+        error_message: '',
+        hint_message: '未登录，请先登录',
+      }
+    })
+    return false
+  } else {
+    return user
+  }
 }
 
 // 登录请求
@@ -147,7 +177,16 @@ let loginOut = async (req, res, next) => {
 // 获取用户购物车数据
 let cartList = async (req, res, next) => {
   console.log('cartList req.body', req.body)
-  let { pageSize, page, userid } = req.body
+  console.log('cartList req.cookies', req.cookies)
+  
+  let user = await userCookie({req, res})
+  console.log('userCookie user', user)
+  if(!user) {
+    return false
+  }
+
+  let { pageSize, page } = req.body
+  let userid = user.userId
   let _pageSize = parseInt(pageSize)
   let _page = parseInt(page)
   let _userid = String(userid)
@@ -218,8 +257,138 @@ let cartList = async (req, res, next) => {
     })
 }
 
+// 删除购物车数据
+let cartDel = async (req, res ,next) => {
+  let user = await userCookie({req, res})
+  console.log('userCookie user', user)
+  if(!user) {
+    return false
+  }
+  let { productId, userId } = req.body
+  let _productId = String(productId)
+  let _userId = String(userId)
+
+  let result = await modelUser.update({"userId": _userId}, {$pull:{
+    'cartList':{
+      'productId':productId
+    }
+  }})
+  console.log('cartDel result', result)
+  if(result) {
+    res.json({
+      response: {
+        error_code: 0,
+        error_message: '',
+        hint_message: '删除成功',
+      }
+    })
+  } else {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '删除失败',
+      }
+    })
+  }
+}
+
+// 添加商品到购物车
+let cartAdd = async (req, res, next) => {
+  let user = await userCookie({req, res})
+  console.log('userCookie user', user)
+  if(!user) {
+    return false
+  }
+  let { productId, userId } = req.body
+
+
+  // let { productId, userId } = {
+  //   productId: '201710017',
+  //   userId: '100000077'
+  // }
+
+  let _productId = String(productId)
+  let _userId = String(userId)
+  if(!_productId) {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '产品ID 是必传的',
+      }
+    })
+  }
+  if(!_userId) {
+    res.json({
+      response: {
+        error_code: 10002,
+        error_message: '',
+        hint_message: '用户ID 是必传的',
+      }
+    })
+  }
+  // 查询用户数据
+  let userInfo = await modelUser.findOne({userID: _userId})
+  
+  console.log('userInfo', userInfo)
+  if(!userInfo) {
+    res.json({
+      response: {
+        error_code: 10003,
+        error_message: userInfo,
+        hint_message: '',
+      }
+    })
+    return false
+  } else {
+    let cartList = userInfo.cartList
+    if(Array.isArray(cartList) && cartList.length > 0) {
+      let existGoods = cartList.find(item => {
+        return item.productId === _productId
+      })
+      if(existGoods) { // 存在，则直接 += 1
+        existGoods.productNum = Number(existGoods.productNum) + 1
+      } else { // 不存在，新增一条数据
+        let product = await modelProduct.findOne({"productId": String(_productId)})
+        console.log('product 1', Object.keys(product))
+        product.productNum = 1
+        userInfo.cartList.push(product)
+      }
+    } else { // 数组不存在，直接添加一组新数据
+      let product = await modelProduct.findOne({"productId": String(_productId)})
+      console.log('product 2', typeof product)
+      product.productNum = 1
+      let arr = []
+      arr.push(product)
+      userInfo.cartList = arr
+    }
+  }
+  userInfo.save()
+    .then(doc => {
+      res.json({
+        response: {
+          error_code: 0,
+          error_message: '',
+          hint_message: '添加成功',
+        }
+      })
+    })
+    .catch(err => {
+      res.json({
+        response: {
+          error_code: 10001,
+          error_message: '',
+          hint_message: err,
+        }
+      })
+    })
+}
+
 module.exports = {
   login,
   register,
-  cartList
+  cartList,
+  cartAdd,
+  cartDel
 }
