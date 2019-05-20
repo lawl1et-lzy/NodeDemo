@@ -52,7 +52,7 @@
           <div class="item-cont">
             <div class="cont-name">{{ item.productName }}</div>
             <div class="cont-price">{{ item.salePrice }}</div>
-            <div class="cont-button">加入购物车</div>
+            <div class="cont-button" @click="handleCartAdd(item.productId)">加入购物车</div>
           </div>
         </div>
       </div>
@@ -91,7 +91,8 @@ export default {
       sort: {
         priceLevel: '0', // 选择的价格区间
         orderBy: true // 升降序
-      }
+      },
+      user: '' // 用户信息
     }
   },
   watch: {
@@ -147,7 +148,35 @@ export default {
     // 价格区间
     handlePriceBetween (key) {
       this.sort.priceLevel = key
+    },
+    // 添加购物车
+    handleCartAdd (pid) {
+      if (!this.user) {
+        this.$router.push({ path: '/home' })
+        return false
+      }
+      let queryParam = {
+        productId: pid,
+        userId: this.user.userId
+      }
+      Api.addCart(queryParam)
+        .then(res => {
+          let { response } = res
+          if (!response.error_code) {
+            this.$message({
+              message: '添加成功',
+              center: true,
+              duration: 1 * 1000
+            })
+          }
+        })
+        .catch(err => {
+          console.log('err', err)
+        })
     }
+  },
+  created () {
+    this.user = this.$cookie.get('user') ? JSON.parse(this.$cookie.get('user')) : ''
   }
 }
 </script>

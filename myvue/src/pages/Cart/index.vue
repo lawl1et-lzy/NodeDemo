@@ -74,8 +74,8 @@ export default {
 
       // 分页
       currentPage: 1, // 当前页
-      pageSize: 1, // 默认显示[每页显示多少条]
-      pageSizes: [1, 2, 3, 4, 5], // 每页显示多少条选项
+      pageSize: 2, // 默认显示[每页显示多少条]
+      pageSizes: [2, 3, 4, 5], // 每页显示多少条选项
       totalNum: 0 // 共多少条
     }
   },
@@ -106,6 +106,25 @@ export default {
     handleDelete (index, row) {
       console.log(`index:${index};`)
       console.log('row', row)
+      let reqParam = {
+        productId: row.productId,
+        userId: this.user.userId
+      }
+      Api.delCart(reqParam)
+        .then(res => {
+          let { response } = res
+          if (!response.error_code) {
+            this.tableData.splice(0, index + 1)
+            this.$message({
+              message: '删除成功',
+              center: true,
+              duration: 1 * 1000
+            })
+          }
+        })
+        .catch(err => {
+          console.log('handleDelete err', err)
+        })
     },
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)

@@ -35,6 +35,22 @@ class Api {
       data
     })
   }
+  // 加入购物车
+  static addCart (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/cartAdd`,
+      data
+    })
+  }
+  // 删除购物车数据
+  static delCart (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/cartDel`,
+      data
+    })
+  }
 }
 
 export default Api
