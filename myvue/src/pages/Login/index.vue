@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="login">
     <section class="form">
       <!-- 账号 -->
       <div class="form-item">
@@ -20,7 +20,7 @@
 <script>
 import Api from '@/api/index.api'
 export default {
-  name: 'Home',
+  name: 'Login',
   data () {
     return {
       account: '',
@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home{
+.login{
   display: flex;
   justify-content: center;
   align-items: center;

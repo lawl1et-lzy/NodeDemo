@@ -158,7 +158,7 @@ export default {
   created () {
     this.user = this.$cookie.get('user') ? JSON.parse(this.$cookie.get('user')) : ''
     if (!this.user) {
-      this.$router.push({ path: '/home' })
+      this.$router.push({ path: '/login' })
       return false
     }
   }

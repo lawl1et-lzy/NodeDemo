@@ -11,7 +11,7 @@
         <el-menu-item
           v-for="(item, index) in menuList"
           :key="index"
-          :index="item.path"
+          :index="`/${item.path}`"
           :route="{path: `/${item.path}`}"
         >{{ item.meta.breadcrumbName }}</el-menu-item>
         <el-menu-item>
@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       user: JSON.parse(this.$cookie.get('user')),
-      activeIndex: MENU_LIST_REG[0],
+      activeIndex: '',
       menuList: [],
       menuListReg: MENU_LIST_REG // 菜单排序规则
     }
@@ -47,15 +47,19 @@ export default {
       this.$cookie.delete('user')
     },
     routerToLoginPage () {
-      this.$router.push({ path: '/home' })
+      this.$router.push({ path: '/login' })
     }
   },
   created () {
+    // 全部路由数据
     let menuList = this.$router.options.routes[0].children
     let newList = menuList.filter(item => {
       return ~this.menuListReg.findIndex(reg => reg === item.path)
     })
     this.menuList = newList
+    // 当前路由数据
+    let route = this.$route
+    this.activeIndex = route.path
   }
 }
 </script>

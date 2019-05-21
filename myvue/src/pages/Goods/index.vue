@@ -152,7 +152,7 @@ export default {
     // 添加购物车
     handleCartAdd (pid) {
       if (!this.user) {
-        this.$router.push({ path: '/home' })
+        this.$router.push({ path: '/login' })
         return false
       }
       let queryParam = {
