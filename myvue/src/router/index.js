@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/pages/Index'
-import Home from '@/pages/Home'
+import Login from '@/pages/Login'
 import Goods from '@/pages/Goods'
 import Cart from '@/pages/Cart'
 
@@ -16,7 +16,7 @@ export default new Router({
       component: Index,
       meta: {
         title: 'Index',
-        breadcrumbName: 'Index'
+        breadcrumbName: '首页'
       },
       children: [
         {
@@ -25,16 +25,16 @@ export default new Router({
           component: Goods,
           meta: {
             title: 'Goods',
-            breadcrumbName: 'Goods'
+            breadcrumbName: '商品列表'
           }
         },
         {
-          path: 'home',
-          name: 'Home',
-          component: Home,
+          path: 'login',
+          name: 'Login',
+          component: Login,
           meta: {
-            title: 'Home',
-            breadcrumbName: 'Home'
+            title: 'Login',
+            breadcrumbName: '登录页'
           }
         },
         {
@@ -43,7 +43,7 @@ export default new Router({
           component: Cart,
           meta: {
             title: 'Cart',
-            breadcrumbName: 'Cart'
+            breadcrumbName: '购物车'
           }
         }
       ]

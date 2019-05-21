@@ -168,6 +168,12 @@ export default {
               center: true,
               duration: 1 * 1000
             })
+          } else {
+            this.$message({
+              message: response.hint_message,
+              center: true,
+              duration: 1 * 1000
+            })
           }
         })
         .catch(err => {
