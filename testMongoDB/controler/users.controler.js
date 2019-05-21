@@ -302,12 +302,6 @@ let cartAdd = async (req, res, next) => {
   }
   let { productId, userId } = req.body
 
-
-  // let { productId, userId } = {
-  //   productId: '201710017',
-  //   userId: '100000077'
-  // }
-
   let _productId = String(productId)
   let _userId = String(userId)
   if(!_productId) {
@@ -329,7 +323,7 @@ let cartAdd = async (req, res, next) => {
     })
   }
   // 查询用户数据
-  let userInfo = await modelUser.findOne({userID: _userId})
+  let userInfo = await modelUser.findOne({userId: _userId})
   
   console.log('userInfo', userInfo)
   if(!userInfo) {
