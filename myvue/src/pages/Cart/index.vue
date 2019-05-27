@@ -59,6 +59,15 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalNum">
     </el-pagination>
+    <!-- 总计 -->
+    <div class="footer">
+      <div class="price">
+        totalPrice: {{ totalPrice }}
+      </div>
+      <div class="btn-checkout">
+        CHECKOUT
+      </div>
+    </div>
   </div>
 </template>
 
@@ -74,9 +83,10 @@ export default {
 
       // 分页
       currentPage: 1, // 当前页
-      pageSize: 2, // 默认显示[每页显示多少条]
+      pageSize: 5, // 默认显示[每页显示多少条]
       pageSizes: [2, 3, 4, 5], // 每页显示多少条选项
-      totalNum: 0 // 共多少条
+      totalNum: 0, // 共多少条
+      totalPrice: 0 // 共多少钱
     }
   },
   computed: {
@@ -114,7 +124,7 @@ export default {
         .then(res => {
           let { response } = res
           if (!response.error_code) {
-            this.tableData.splice(0, index + 1)
+            this.fetchCartList(this.cartQueryParam)
             this.$message({
               message: '删除成功',
               center: true,
@@ -166,5 +176,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.wrap-cart{
+  .footer{
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    padding: 16px;
+  }
+  .btn-checkout{
+    padding: 10px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+  }
+}
 </style>
