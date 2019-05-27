@@ -270,7 +270,7 @@ let cartDel = async (req, res ,next) => {
 
   let result = await modelUser.update({"userId": _userId}, {$pull:{
     'cartList':{
-      'productId':productId
+      'productId':_productId
     }
   }})
   console.log('cartDel result', result)
