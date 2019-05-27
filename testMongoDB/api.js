@@ -20,5 +20,15 @@ router.post('/api/cartDel', userControler.cartDel)
 // 商品列表
 router.post('/api/product', productControler.goodsList)
 
+// 获取用户地址
+router.post('/api/address', userControler.address)
+
+// 设置用户默认地址
+router.post('/api/setAddress', userControler.setAddress)
+
+// 删除用户默认地址
+router.post('/api/delAddress', userControler.delAddress)
+
+
 
 module.exports = router;

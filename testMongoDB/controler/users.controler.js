@@ -379,10 +379,162 @@ let cartAdd = async (req, res, next) => {
     })
 }
 
+// 用户地址列表
+let address = async (req, res, next) => {
+  let user = await userCookie({req, res})
+  if(!user) {
+    return false
+  }
+  let userid = user.userId
+  let reqParam = {
+    userId: String(userid)
+  }
+  modelUser.findOne(reqParam)
+    .then(data => {
+      if(data && data.length === 0){
+        res.json({
+          response: {
+            error_code: 10004,
+            error_message: '',
+            hint_message: '暂无数据',
+          }
+        })
+      } else {
+        res.json({
+          response: {
+            error_code: 0,
+            error_message: '',
+            hint_message: '暂无数据',
+          },
+          data: data.addressList
+        })
+      }
+    })
+    .catch(err => {
+      res.json({
+        response: {
+          error_code: 10005,
+          error_message: err,
+          hint_message: '',
+        }
+      })
+    })
+}
+
+// 设置用户默认地址
+let setAddress = async (req, res, next) => {
+  let user = await userCookie({req, res})
+  if(!user) {
+    return false
+  }
+  let { addressId } = req.body
+  let { userId } = user
+
+  if(!addressId) {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '地址不能为空',
+      }
+    })
+    return false
+  }
+
+  let userInfo = await modelUser.findOne({'userId': userId})
+  if(userInfo) {
+    let addressList = userInfo.addressList
+    addressList.forEach(item => {
+      if(Number(item.addressId) === Number(addressId)) {
+        item.isDefault = true
+      } else {
+        item.isDefault = false
+      }
+    })
+    let saveRel = await userInfo.save()
+    if(saveRel) {
+      res.json({
+        response: {
+          error_code: 0,
+          error_message: '',
+          hint_message: '保存成功',
+        }
+      })
+    } else {
+      res.json({
+        response: {
+          error_code: 10005,
+          error_message: '',
+          hint_message: '保存失败',
+        }
+      })
+    }
+  } else {
+    res.json({
+      response: {
+        error_code: 10002,
+        error_message: '',
+        hint_message: '用户暂无数据',
+      }
+    })
+  }
+  
+}
+
+// 删除用户地址
+let delAddress = async (req, res, next) => {
+  let user = await userCookie({req, res})
+  if(!user) {
+    return false
+  }
+  let { addressId } = req.body
+  let { userId } = user
+
+  if(!addressId) {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '地址不能为空',
+      }
+    })
+    return false
+  }
+
+  let result = await modelUser.update({'userId': userId}, {
+    $pull: {
+      'addressList': {
+        'addressId': String(addressId)
+      }
+    }
+  })
+  console.log('delAddress result', result)
+  if(result) {
+    res.json({
+      response: {
+        error_code: 0,
+        error_message: '',
+        hint_message: '删除成功',
+      }
+    })
+  } else {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '删除失败',
+      }
+    })
+  }
+}
+
 module.exports = {
   login,
   register,
   cartList,
   cartAdd,
-  cartDel
+  cartDel,
+  address,
+  setAddress,
+  delAddress
 }
