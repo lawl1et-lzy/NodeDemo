@@ -51,6 +51,30 @@ class Api {
       data
     })
   }
+  // 获取用户地址
+  static getAddress (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/address`,
+      data
+    })
+  }
+  // 设置默认地址
+  static setDefaultAddress (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/setAddress`,
+      data
+    })
+  }
+  // 删除默认地址
+  static delAddress (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/delAddress`,
+      data
+    })
+  }
 }
 
 export default Api

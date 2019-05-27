@@ -8,6 +8,7 @@
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
+      @row-click="handleRowClick"
     >
       <el-table-column
         type="selection"
@@ -64,7 +65,7 @@
       <div class="price">
         totalPrice: {{ totalPrice }}
       </div>
-      <div class="btn-checkout">
+      <div class="btn-checkout" @click="handleCheckoutClick">
         CHECKOUT
       </div>
     </div>
@@ -73,6 +74,7 @@
 
 <script>
 import Api from '../../api/index.api'
+import BigNumber from 'bignumber.js'
 export default {
   name: 'Cart',
   data () {
@@ -85,8 +87,7 @@ export default {
       currentPage: 1, // 当前页
       pageSize: 5, // 默认显示[每页显示多少条]
       pageSizes: [2, 3, 4, 5], // 每页显示多少条选项
-      totalNum: 0, // 共多少条
-      totalPrice: 0 // 共多少钱
+      totalNum: 0 // 共多少条
     }
   },
   computed: {
@@ -97,6 +98,17 @@ export default {
         pageSize: this.pageSize,
         userid: this.user ? this.user.userId : ''
       }
+    },
+    // 计算总价
+    totalPrice () {
+      let sum = new BigNumber(0)
+      if (Array.isArray(this.multipleSelection) && this.multipleSelection.length > 0) {
+        this.multipleSelection.forEach(item => {
+          sum = sum.plus(item.subtotal)
+        })
+        return sum
+      }
+      return 0
     }
   },
   watch: {
@@ -110,9 +122,16 @@ export default {
     }
   },
   methods: {
+    // 多选框
     handleSelectionChange (val) {
+      console.log('handleSelectionChange val', val)
       this.multipleSelection = val
     },
+    // 点击行
+    handleRowClick (row) {
+      this.$refs.multipleTable.toggleRowSelection(row)
+    },
+    // 删除
     handleDelete (index, row) {
       console.log(`index:${index};`)
       console.log('row', row)
@@ -163,6 +182,11 @@ export default {
       this.tableData.forEach(item => {
         item.subtotal = item.productNum * item.salePrice
       })
+    },
+    handleCheckoutClick () {
+      if (this.totalPrice) {
+        this.$router.push({ path: '/address' })
+      }
     }
   },
   created () {

@@ -4,6 +4,7 @@ import Index from '@/pages/Index'
 import Login from '@/pages/Login'
 import Goods from '@/pages/Goods'
 import Cart from '@/pages/Cart'
+import Address from '@/pages/Address'
 
 Vue.use(Router)
 
@@ -44,6 +45,15 @@ export default new Router({
           meta: {
             title: 'Cart',
             breadcrumbName: '购物车'
+          }
+        },
+        {
+          path: 'address',
+          name: 'address',
+          component: Address,
+          meta: {
+            title: 'Address',
+            breadcrumbName: '收货地址'
           }
         }
       ]

@@ -25,3 +25,4 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 1. 图片路径的引用
 2. 封装cookie
 3. Toast
+4. BigNumber.js 的使用整理
