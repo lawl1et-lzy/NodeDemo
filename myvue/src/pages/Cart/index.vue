@@ -184,9 +184,31 @@ export default {
       })
     },
     handleCheckoutClick () {
-      if (this.totalPrice) {
-        this.$router.push({ path: '/address' })
+      if (this.multipleSelection.length <= 0) {
+        this.$message({
+          message: '请选择',
+          center: true,
+          duration: 1 * 1000
+        })
+        return false
       }
+
+      let productIds = []
+
+      this.multipleSelection.forEach(item => {
+        productIds.push(item.productId)
+      })
+
+      Api.cartConfirm({productIds})
+        .then(res => {
+          let { response } = res
+          if (!response.error_code) {
+            this.$router.push({ path: '/address' })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   created () {
@@ -211,6 +233,7 @@ export default {
     padding: 10px;
     margin-left: 10px;
     border: 1px solid #ccc;
+    cursor: pointer;
   }
 }
 </style>

@@ -75,6 +75,14 @@ class Api {
       data
     })
   }
+  // 购物车确认
+  static cartConfirm (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/cartConfirm`,
+      data
+    })
+  }
 }
 
 export default Api
