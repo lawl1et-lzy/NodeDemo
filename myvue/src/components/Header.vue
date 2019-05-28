@@ -25,7 +25,7 @@
 </template>
 
 <script>
-const MENU_LIST_REG = ['goods', 'cart']
+const MENU_LIST_REG = ['goods', 'cart', 'address']
 export default {
   name: 'Header',
   data () {
