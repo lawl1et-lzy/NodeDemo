@@ -17,6 +17,9 @@ router.post('/api/cartAdd', userControler.cartAdd)
 // 删除购物车数据
 router.post('/api/cartDel', userControler.cartDel)
 
+// 添加购物车数据
+router.post('/api/cartConfirm', userControler.cartConfirm)
+
 // 商品列表
 router.post('/api/product', productControler.goodsList)
 

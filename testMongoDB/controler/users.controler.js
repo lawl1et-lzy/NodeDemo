@@ -379,6 +379,65 @@ let cartAdd = async (req, res, next) => {
     })
 }
 
+// 购物车确认
+let cartConfirm = async (req, res, next) => {
+  let user = await userCookie({req, res})
+  if(!user) {
+    return false
+  }
+  let { productIds } = req.body
+  let { userId } = user
+
+  if(!(Array.isArray(productIds) || productIds.length > 0)) {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '商品不能为空',
+      }
+    })
+    return false
+  }
+
+  let userInfo = await modelUser.findOne({"userId": userId})
+  if(userInfo) {
+    let cartList = userInfo.cartList || []
+    if(Array.isArray(cartList) && cartList.length > 0) {
+      cartList.forEach(item => item.checked = 0)
+      productIds.forEach(id => {
+        let existItem = cartList.find(item => item.productId === id)
+        existItem.checked = 1
+      })
+    }
+    let saveRel = await userInfo.save()
+    if(saveRel) {
+      res.json({
+        response: {
+          error_code: 0,
+          error_message: '',
+          hint_message: '保存成功',
+        }
+      })
+    } else {
+      res.json({
+        response: {
+          error_code: 10005,
+          error_message: '',
+          hint_message: '保存失败',
+        }
+      })
+    }
+  } else {
+    res.json({
+      response: {
+        error_code: 10002,
+        error_message: '',
+        hint_message: '用户暂无信息',
+      }
+    })
+  }
+}
+
 // 用户地址列表
 let address = async (req, res, next) => {
   let user = await userCookie({req, res})
@@ -534,6 +593,7 @@ module.exports = {
   cartList,
   cartAdd,
   cartDel,
+  cartConfirm,
   address,
   setAddress,
   delAddress
