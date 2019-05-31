@@ -32,6 +32,12 @@ router.post('/api/setAddress', userControler.setAddress)
 // 删除用户默认地址
 router.post('/api/delAddress', userControler.delAddress)
 
+// 获得订单列表
+router.post('/api/getOrderList', userControler.getOrderList)
+
+// 确认订单
+router.post('/api/addOrderList', userControler.addOrderList)
+
 
 
 module.exports = router;

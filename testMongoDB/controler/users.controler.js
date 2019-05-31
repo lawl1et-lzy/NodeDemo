@@ -587,6 +587,109 @@ let delAddress = async (req, res, next) => {
   }
 }
 
+// 订单列表
+let getOrderList = async (req, res, next) => {
+  console.log('calculate', 0.1 + 0.2)
+  let user = await hasUserInfo({req, res})
+  if(!user) {
+    return false
+  }
+  let { userId } = user
+  let userInfo = await modelUser.findOne({userId})
+  if(userInfo) {
+    let cartList = userInfo.cartList
+    if(Array.isArray(cartList) && cartList.length > 0) {
+      let orderList = cartList.filter(item => {
+        return item.checked === 1
+      })
+      res.json({
+        response: {
+          error_code: 0,
+          error_message: '',
+          hint_message: '',
+          data: orderList
+        }
+      })
+    } else {
+      res.json({
+        response: {
+          error_code: 10002,
+          error_message: '',
+          hint_message: '暂无订单数据',
+        }
+      })
+    }
+  } else {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '暂无用户信息',
+      }
+    })
+  }
+}
+
+// 确认订单
+let addOrderList = async (req, res, next) => {
+  let user = await hasUserInfo({req, res})
+  if(!user) {
+    return false
+  }
+  let { userId } = user
+
+  let userInfo = await modelUser.findOne({ userId })
+  if(userInfo) {
+    // 构造
+    let platform = '622'
+    let r1 = Math.floor(Math.random() * 10)
+    let r2 = Math.floor(Math.random() * 10)
+
+    let sysDate = new Date().Format('yyyyMMddhhmmss')
+    let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss')
+
+    let orderId = platform + r1 + sysDate + r2 // 订单ID
+
+    let cartList = userInfo.cartList // 购物车数据
+    
+    let goodsList = cartList.filter(item => { // 订单数据
+      return item.checked === 1
+    })
+
+    let orderTotal = goodsList.reduce((total, item) => { // 订单总价
+      return total + Number(item.productNum) * Number(item.salePrice)
+    }, 0)
+
+    let address = userInfo.addressList.find(addr => {
+      return addr.isDefault
+    })
+
+
+    let order = {
+      orderId: orderId,
+      orderTotal: orderTotal,
+      addressInfo: address,
+      goodsList: goodsList,
+      orderStatus:'1',
+      createDate: createDate
+    };
+
+    if(Array.isArray(userInfo.orderList)) {
+      userInfo.orderList.push(order)
+    } else {
+      userInfo.orderList = [].push(order)
+    }
+  } else {
+    res.json({
+      response: {
+        error_code: 10001,
+        error_message: '',
+        hint_message: '暂无用户数据',
+      }
+    })
+  }
+}
+
 module.exports = {
   login,
   register,
@@ -596,5 +699,7 @@ module.exports = {
   cartConfirm,
   address,
   setAddress,
-  delAddress
+  delAddress,
+  getOrderList,
+  addOrderList
 }
