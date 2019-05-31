@@ -4,7 +4,9 @@ import Index from '@/pages/Index'
 import Login from '@/pages/Login'
 import Goods from '@/pages/Goods'
 import Cart from '@/pages/Cart'
-import Address from '@/pages/Address'
+
+import OrderConfirm from '@/pages/OrderConfirm'
+import Address from '@/pages/OrderConfirm/address'
 
 Vue.use(Router)
 
@@ -40,7 +42,7 @@ export default new Router({
         },
         {
           path: 'cart',
-          name: 'cart',
+          name: 'Cart',
           component: Cart,
           meta: {
             title: 'Cart',
@@ -48,13 +50,24 @@ export default new Router({
           }
         },
         {
-          path: 'address',
-          name: 'address',
-          component: Address,
+          path: 'orderconfirm',
+          name: 'OrderConfirm',
+          component: OrderConfirm,
           meta: {
-            title: 'Address',
-            breadcrumbName: '收货地址'
-          }
+            title: 'OrderConfirm',
+            breadcrumbName: '确认订单页'
+          },
+          children: [
+            {
+              path: 'address',
+              name: 'Address',
+              component: Address,
+              meta: {
+                title: 'Address',
+                breadcrumbName: '地址'
+              }
+            }
+          ]
         }
       ]
     }

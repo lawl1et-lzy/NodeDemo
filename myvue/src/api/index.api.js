@@ -83,6 +83,22 @@ class Api {
       data
     })
   }
+  // 获取订单列表
+  static getOrderList (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/getOrderList`,
+      data
+    })
+  }
+  // 确认订单
+  static addOrderList (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/addOrderList`,
+      data
+    })
+  }
 }
 
 export default Api
