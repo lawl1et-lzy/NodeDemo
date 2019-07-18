@@ -1,5 +1,7 @@
 <template>
-  <iframe id="minderIframe" name="minderIframe" src="../../../static/kityminder-editor/dist/index.html?id=123123123" frameborder="0"></iframe>
+  <div class="wrap-editor">
+    <iframe ref="minderIframe" id="minderIframe" name="minderIframe" src="../../../static/kityminder-editor/dist/index.html" @load="handleLoad"></iframe>
+  </div>
 </template>
 
 <script>
@@ -9,9 +11,8 @@ export default {
   data () {
     return {
       id: '', // 链接参数
-      editor: '',
-      minder: '',
-      naotuCache: ''
+      naotuCache: '',
+      iframeSec: ''
     }
   },
   created () {
@@ -19,11 +20,9 @@ export default {
     this.id = routeParams.id
     this.queryNaotu()
   },
-  mounted () {
-    document.querySelector('#minderIframe').onload = () => {
+  methods: {
+    handleLoad () {
       this.editor = window.frames['minderIframe'].editor
-      this.minder = window.frames['minderIframe'].minder
-
       if (this.naotuCache) {
         this.editor.minder.importJson(this.naotuCache)
       }
@@ -36,9 +35,7 @@ export default {
           this.handleCtrlSClick()
         }
       }, false)
-    }
-  },
-  methods: {
+    },
     // ctrl + s 保存
     handleCtrlSClick () {
       this.naotuCache = JSON.stringify(this.editor.minder.exportJson())
@@ -93,8 +90,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-iframe{
+<style lang="scss">
+.wrap-editor, #minderIframe{
   width: 100%;
   height: 100%;
 }
