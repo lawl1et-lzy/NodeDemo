@@ -8,6 +8,9 @@ import Cart from '@/pages/Cart'
 import OrderConfirm from '@/pages/OrderConfirm'
 import Address from '@/pages/OrderConfirm/address'
 
+const Naotu = () => import('@/pages/Naotu')
+const NaotuEditor = () => import('@/pages/NaotuEditor')
+
 Vue.use(Router)
 
 export default new Router({
@@ -70,6 +73,16 @@ export default new Router({
           ]
         }
       ]
+    },
+    {
+      path: '/naotu',
+      name: 'Naotu',
+      component: Naotu
+    },
+    {
+      path: '/naotueditor/:id',
+      name: 'NaotuEditor',
+      component: NaotuEditor
     }
   ]
 })

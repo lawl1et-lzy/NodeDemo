@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userControler = require('./controler/users.controler.js')
 const productControler = require('./controler/product.controler.js')
+const naotuControler = require('./controler/naotu.controler.js')
 // 登录
 router.post('/api/login', userControler.login)
 
@@ -38,6 +39,17 @@ router.post('/api/getOrderList', userControler.getOrderList)
 // 确认订单
 router.post('/api/addOrderList', userControler.addOrderList)
 
+// naotu
+// add
+router.post('/api/naotu/add', naotuControler.add)
 
+// update
+router.post('/api/naotu/update', naotuControler.update)
+
+// del
+router.post('/api/naotu/del', naotuControler.del)
+
+// find
+router.post('/api/naotu/query', naotuControler.query)
 
 module.exports = router;

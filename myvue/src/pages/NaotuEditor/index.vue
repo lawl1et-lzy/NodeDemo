@@ -1,0 +1,101 @@
+<template>
+  <iframe id="minderIframe" name="minderIframe" src="../../../static/kityminder-editor/dist/index.html?id=123123123" frameborder="0"></iframe>
+</template>
+
+<script>
+import Api from '@/api/index.api'
+export default {
+  name: 'NaotuEditor',
+  data () {
+    return {
+      id: '', // 链接参数
+      editor: '',
+      minder: '',
+      naotuCache: ''
+    }
+  },
+  created () {
+    let routeParams = this.$route.params
+    this.id = routeParams.id
+    this.queryNaotu()
+  },
+  mounted () {
+    document.querySelector('#minderIframe').onload = () => {
+      this.editor = window.frames['minderIframe'].editor
+      this.minder = window.frames['minderIframe'].minder
+
+      if (this.naotuCache) {
+        this.editor.minder.importJson(this.naotuCache)
+      }
+
+      window.frames['minderIframe'].addEventListener('keydown', e => {
+        // 可以判断是不是mac，如果是mac,ctrl变为花键
+        // event.preventDefault() 方法阻止元素发生默认的行为。
+        if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+          e.preventDefault()
+          this.handleCtrlSClick()
+        }
+      }, false)
+    }
+  },
+  methods: {
+    // ctrl + s 保存
+    handleCtrlSClick () {
+      this.naotuCache = JSON.stringify(this.editor.minder.exportJson())
+      let rp = {
+        id: String(this.id),
+        value: this.naotuCache
+      }
+      Api.updateNaotu(rp)
+        .then(res => {
+          let { response } = res
+          if (!response.error_code) {
+            this.$message({
+              message: '保存成功',
+              center: true,
+              duration: 2 * 1000
+            })
+          } else {
+            this.$message({
+              message: response.hint_message,
+              center: true,
+              duration: 2 * 1000
+            })
+          }
+        })
+        .catch(err => {
+          console.log('addNaotu', err)
+        })
+    },
+    // 查询脑图
+    queryNaotu () {
+      let rp = {
+        id: String(this.id)
+      }
+      Api.queryNaotu(rp)
+        .then(res => {
+          let { response, data } = res
+          if (!response.error_code) {
+            this.naotuCache = data[0].value ? JSON.parse(data[0].value) : ''
+          } else {
+            this.$message({
+              message: response.hint_message,
+              center: true,
+              duration: 2 * 1000
+            })
+          }
+        })
+        .catch(err => {
+          console.log('queryNaotu', err)
+        })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+iframe{
+  width: 100%;
+  height: 100%;
+}
+</style>

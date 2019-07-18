@@ -99,6 +99,38 @@ class Api {
       data
     })
   }
+  // add 脑图
+  static addNaotu (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/add`,
+      data
+    })
+  }
+  // update 脑图
+  static updateNaotu (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/update`,
+      data
+    })
+  }
+  // del 脑图
+  static delNaotu (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/del`,
+      data
+    })
+  }
+  // query 脑图
+  static queryNaotu (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/query`,
+      data
+    })
+  }
 }
 
 export default Api
