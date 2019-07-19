@@ -99,16 +99,26 @@ class Api {
       data
     })
   }
-  // add 脑图
-  static addNaotu (data) {
+
+  // naotu
+  // addFile
+  static addFile (data) {
     return axios({
       method: 'POST',
-      url: `${http}/naotu/add`,
+      url: `${http}/naotu/add_file`,
       data
     })
   }
-  // update 脑图
-  static updateNaotu (data) {
+  // addDirectory
+  static addDirectory (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/add_directory`,
+      data
+    })
+  }
+  // update
+  static updateFile (data) {
     return axios({
       method: 'POST',
       url: `${http}/naotu/update`,
@@ -116,18 +126,42 @@ class Api {
     })
   }
   // del 脑图
-  static delNaotu (data) {
+  static delFile (data) {
     return axios({
       method: 'POST',
       url: `${http}/naotu/del`,
       data
     })
   }
-  // query 脑图
-  static queryNaotu (data) {
+  // queryFile
+  static queryFile (data) {
     return axios({
       method: 'POST',
-      url: `${http}/naotu/query`,
+      url: `${http}/naotu/query_file`,
+      data
+    })
+  }
+  // queryDirectoty
+  static queryDirectoty (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/query_directory`,
+      data
+    })
+  }
+  // 获取 ROOT_GUID
+  static getRootGuid (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/get_root_guid`,
+      data
+    })
+  }
+  // 重命名
+  static rename (data) {
+    return axios({
+      method: 'POST',
+      url: `${http}/naotu/rename`,
       data
     })
   }

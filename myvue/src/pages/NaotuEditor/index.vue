@@ -10,17 +10,18 @@ export default {
   name: 'NaotuEditor',
   data () {
     return {
-      id: '', // 链接参数
+      fileGuid: '', // 链接参数
       naotuCache: '',
       iframeSec: ''
     }
   },
   created () {
     let routeParams = this.$route.params
-    this.id = routeParams.id
-    this.queryNaotu()
+    this.fileGuid = routeParams.id
+    this.fetchQueryFile()
   },
   methods: {
+    // iframe load
     handleLoad () {
       this.editor = window.frames['minderIframe'].editor
       if (this.naotuCache) {
@@ -39,52 +40,52 @@ export default {
     // ctrl + s 保存
     handleCtrlSClick () {
       this.naotuCache = JSON.stringify(this.editor.minder.exportJson())
+      this.fetchUpdateFile()
+    },
+    // request update
+    async fetchUpdateFile () {
       let rp = {
-        id: String(this.id),
-        value: this.naotuCache
+        fileGuid: String(this.fileGuid),
+        content: this.naotuCache
       }
-      Api.updateNaotu(rp)
-        .then(res => {
-          let { response } = res
-          if (!response.error_code) {
-            this.$message({
-              message: '保存成功',
-              center: true,
-              duration: 2 * 1000
-            })
-          } else {
-            this.$message({
-              message: response.hint_message,
-              center: true,
-              duration: 2 * 1000
-            })
-          }
+      let res = await Api.updateFile(rp)
+      let { response } = res
+      if (!response.error_code) {
+        this.$message({
+          message: '保存成功',
+          center: true,
+          duration: 2 * 1000
         })
-        .catch(err => {
-          console.log('addNaotu', err)
+      } else {
+        this.$message({
+          message: response.hint_message,
+          center: true,
+          duration: 2 * 1000
         })
+      }
+    },
+    // 获取 列表数据
+    async fetchQueryFile () {
+      let rp = {
+        fileGuid: this.fileGuid
+      }
+      let res = await Api.queryFile(rp)
+      if (res) {
+        this.handleQueryData(res)
+      }
     },
     // 查询脑图
-    queryNaotu () {
-      let rp = {
-        id: String(this.id)
+    handleQueryData (res) {
+      let { response, data } = res
+      if (!response.error_code) {
+        this.naotuCache = data[0].content ? JSON.parse(data[0].content) : ''
+      } else {
+        this.$message({
+          message: response.hint_message,
+          center: true,
+          duration: 2 * 1000
+        })
       }
-      Api.queryNaotu(rp)
-        .then(res => {
-          let { response, data } = res
-          if (!response.error_code) {
-            this.naotuCache = data[0].value ? JSON.parse(data[0].value) : ''
-          } else {
-            this.$message({
-              message: response.hint_message,
-              center: true,
-              duration: 2 * 1000
-            })
-          }
-        })
-        .catch(err => {
-          console.log('queryNaotu', err)
-        })
     }
   }
 }

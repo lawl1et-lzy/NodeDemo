@@ -40,8 +40,17 @@ router.post('/api/getOrderList', userControler.getOrderList)
 router.post('/api/addOrderList', userControler.addOrderList)
 
 // naotu
-// add
-router.post('/api/naotu/add', naotuControler.add)
+// getRootGuid
+router.post('/api/naotu/get_root_guid', naotuControler.getRootGuid)
+
+// addFile
+router.post('/api/naotu/add_file', naotuControler.addFile)
+
+// reName
+router.post('/api/naotu/rename', naotuControler.reName)
+
+// addDirectory
+router.post('/api/naotu/add_directory', naotuControler.addDirectory)
 
 // update
 router.post('/api/naotu/update', naotuControler.update)
@@ -49,7 +58,10 @@ router.post('/api/naotu/update', naotuControler.update)
 // del
 router.post('/api/naotu/del', naotuControler.del)
 
-// find
-router.post('/api/naotu/query', naotuControler.query)
+// queryFile
+router.post('/api/naotu/query_file', naotuControler.queryFile)
+
+// queryDirectoty
+router.post('/api/naotu/query_directory', naotuControler.queryDirectoty)
 
 module.exports = router;
