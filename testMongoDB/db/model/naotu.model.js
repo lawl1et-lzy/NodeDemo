@@ -22,6 +22,11 @@ let naotu = {
     type: String,
     default: 'file'
   }, 
+  // 是否删除
+  isDelete: {
+    type: Boolean,
+    default: false
+  },
   // 文件大小
   fileSize: Number,
   // 扩展名

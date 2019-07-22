@@ -169,49 +169,61 @@ let update = async (req, res, next) => {
 }
 
 /**
- * 删除 文件 或者 文件夹
+ * 批量删除 文件 或者 文件夹
  * 1. 文件
  *  1.1 直接删除
  * 
  * 2. 文件夹
- *  2.1 删除当前文件夹，包括以
+ *  2.1 删除当前文件夹
  *  2.2 删除所有 以该文件夹 fileGuid 为 parentGuid 的 files
  */
 let del = async (req, res, next) => {
-  let { fileGuid } = req.body
-  let rp = {}
-  let file = await modelNaotu.findOne({ fileGuid })
-  if(file) {
-    rp.fileGuid = fileGuid
-    // 判断是否是文件夹类型
-    if(file.fileType === 'directory'){
-      rp.parentGuid = rp.fileGuid
-    }
-    modelNaotu.deleteMany(rp)
-      .then(doc => {
+  let { fileGuidArr } = req.body
+  if(Array.isArray(fileGuidArr) && fileGuidArr.length > 0) {
+    fileGuidArr.forEach(async fileGuid => {
+      let rp = {}
+      let file = await modelNaotu.findOne({ fileGuid })
+      if(file) {
+        rp.fileGuid = fileGuid
+        // 判断是否是文件夹类型
+        if(file.fileType === 'directory'){
+          rp.parentGuid = rp.fileGuid
+        }
+        modelNaotu.deleteMany(rp)
+          .then(doc => {
+            res.json({
+              response: {
+                error_code: 0,
+                error_message: '',
+                hint_message: '删除成功',
+              }
+            })
+          })
+          .catch(err => {
+            res.json({
+              response: {
+                error_code: 10001,
+                error_message: '',
+                hint_message: err,
+              }
+            })
+          })
+      } else {
         res.json({
           response: {
-            error_code: 0,
+            error_code: 200,
             error_message: '',
-            hint_message: '删除成功',
+            hint_message: '暂无此文件夹',
           }
         })
-      })
-      .catch(err => {
-        res.json({
-          response: {
-            error_code: 10001,
-            error_message: '',
-            hint_message: err,
-          }
-        })
-      })
+      }
+    })
   } else {
     res.json({
       response: {
-        error_code: 200,
+        error_code: 10001,
         error_message: '',
-        hint_message: '暂无此文件夹',
+        hint_message: '参数有误',
       }
     })
   }

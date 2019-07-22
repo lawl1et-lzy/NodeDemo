@@ -103,7 +103,7 @@ export default {
     // 编辑
     handleEdit (index, row) {
       let { fileGuid } = row
-      this.$router.push({'name': 'NaotuEditor', 'params': { fileGuid }})
+      this.$router.push({'name': 'NaotuEditor', 'params': { id: fileGuid }})
     },
     // 删除
     handleDelete (index, row) {
@@ -113,7 +113,7 @@ export default {
     // 删除
     async fetchDelFile (fileGuid) {
       let rp = {
-        fileGuid
+        fileGuidArr: [fileGuid]
       }
       let res = await Api.delFile(rp)
       let { response } = res
