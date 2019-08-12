@@ -3,6 +3,7 @@ const router = express.Router();
 const userControler = require('./controler/users.controler.js')
 const productControler = require('./controler/product.controler.js')
 const naotuControler = require('./controler/naotu.controler.js')
+require('./controler/test.controler.js')
 // 登录
 router.post('/api/login', userControler.login)
 
