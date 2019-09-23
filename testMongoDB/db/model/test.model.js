@@ -5,6 +5,10 @@ const Mongoose = require('mongoose');
 const Schema = Mongoose.Schema
 
 const authorSchema = {
+  id: {
+    type: String,
+    default: Mongoose.Types.ObjectId
+  },
   name: String,
   age: Number,
   posts: [
@@ -22,6 +26,10 @@ const authorSchema = {
 }
 
 const postSchema = {
+  id: {
+    type: String,
+    default: Mongoose.Types.ObjectId
+  },
   title: String,
   content: String,
   author: {
@@ -37,6 +45,10 @@ const postSchema = {
 }
 
 const commentsSchema = {
+  id: {
+    type: String,
+    default: Mongoose.Types.ObjectId
+  },
   content: String,
   author: {
     type: Schema.Types.ObjectId,
@@ -48,6 +60,6 @@ const Author = new Schema(authorSchema)
 const Post = new Schema(postSchema)
 const Comments = new Schema(commentsSchema)
 
-Mongoose.model('author', Author)
+Mongoose.model('author', Author, 'lawliet_Author')
 Mongoose.model('post', Post)
 Mongoose.model('comments', Comments)

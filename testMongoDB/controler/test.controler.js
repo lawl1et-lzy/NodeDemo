@@ -44,11 +44,19 @@ let init = async () => {
 
 let findData = async () => {
   try {
-    let authorDoc = await AuthorModel.findOne({}).populate([{path: 'posts', select: {'comments': 0}}, {path: 'comments'}]).exec()
-    console.log('authorDoc', authorDoc)
+    let postl = await PostModel.find({title: 'test'})
+    const { _id } = postl[0]
+    await AuthorModel.findOneAndUpdate({name: 'lawliet'}, {
+      $push: {
+        posts: _id
+      }
+    })
+    let authorDoc = await AuthorModel.find({}).populate([{path: 'posts', select: {'comments': 0}}, {path: 'comments'}]).exec()
+    // let authorDoc = await AuthorModel.find({_id: Mongoose.Types.ObjectId('5d5133f70082f20f04877a1d')})
+    // let authorDoc = await AuthorModel.findById('5d5133f70082f20f04877a1d')
+    console.log('authorDoc', authorDoc[0].posts)
   } catch (error) {
-    
+    console.log(error)
   }
 }
 findData()
-
